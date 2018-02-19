@@ -97,21 +97,27 @@ AFRAME.registerComponent('resonance-audio-room', {
   },
 
   setUpAudio () {
-    let children = this.el.object3D.children
+    let children = this.el.object3D.children //TODO: lets get an array of audioSources from the scene instead so they can be placed with models
     // 1 = this.el
     if (children.length < 2) { return }
 
+    let sounds = [];
+
     children.forEach((childEl) => {
       if (!childEl.el.getAttribute('resonance-audio-src')) { return }
-      if (this.hasAudio) {
-        warn('supporting single resonance-audio-src under resonance-audio-room')
-      }
-      if (this.sound) {
-        this.sound.remove()
-      }
+      // if (this.hasAudio) {
+      //   warn('supporting single resonance-audio-src under resonance-audio-room')
+      // }
+      // if (this.sound) {
+      //   this.sound.remove()
+      // }
       this.hasAudio = true
-      this.sound = childEl.el.components['resonance-audio-src']
+      sounds.push(childEl.el.components['resonance-audio-src'])
     })
+
+    this.sound = sounds[0];
+
+    //TODO: Abstract below into addSound method so we can have multiple sources and stop using this.el.audioElement
 
     // Load an audio file into the AudioElement.
     this.el.audioElement.setAttribute('src', this.sound.getSource())
